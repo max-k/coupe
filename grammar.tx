@@ -1,9 +1,10 @@
 CueSheet:
-    commands*=Command
+    infos*=AlbumInfo
+    commands+=Command
 ;
 
-Command:
-    REM | AlbumTag | MetaTag | File
+AlbumInfo:
+    REM | AlbumTag | MetaTag
 ;
 
 REM:
@@ -39,11 +40,11 @@ AlbumTag:
 ;
 
 Catalog:
-    'CATALOG' value=/\d{13}/
+    name='CATALOG' value=/\d{13}/
 ;
 
 CdTextFile:
-    'CDTEXTFILE' value=IdOrString
+    name='CDTEXTFILE' value=IdOrString
 ;
 
 MetaTag:
@@ -52,6 +53,10 @@ MetaTag:
 
 MetaTagName:
     'PERFORMER' | 'SONGWRITER' | 'TITLE'
+;
+
+Command:
+    REM | AlbumTag | File
 ;
 
 File:
@@ -76,7 +81,7 @@ DataType:
 ;
 
 TrackInfo:
-    FlagList | TrackTag | MetaTag
+    FlagList | Isrc | MetaTag
 ;
 
 FlagList:
@@ -87,12 +92,8 @@ FlagValue:
     'DCP' | '4CH' | 'PRE' | 'DATA'
 ;
 
-TrackTag:
-    name=TrackTagName value=ID
-;
-
-TrackTagName:
-    'ISRC'
+Isrc:
+    name='ISRC' value=/([a-z]|[A-Z]){2}([a-z]|[A-Z]|[0-9]){3}[0-9]{7}/
 ;
 
 PreGap:
