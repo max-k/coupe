@@ -1,3 +1,5 @@
+# flake8: noqa
+GRAMMAR = """
 CueSheet:
     infos*=AlbumInfo
     commands+=Command
@@ -85,7 +87,7 @@ TrackInfo:
 ;
 
 FlagList:
-    'FLAGS' values+=FlagValue[eolterm]
+    name='FLAGS' values+=FlagValue[eolterm]
 ;
 
 FlagValue:
@@ -123,3 +125,4 @@ Time:
 Frame:
     /[0-6][0-9]/ | /7[0-4]/
 ;
+"""
