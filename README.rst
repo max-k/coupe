@@ -33,7 +33,15 @@ Graphical representation
 Meta-model
 ----------
 
-Graphical visualization of coupe_ meta-model in `GraphViz`_'s dot format
+Export grammar to a file
+
+.. code:: bash
+
+    $ cp coupe/grammar.py grammar.tx
+    $ sed -i '/"""$/d' grammar.tx
+    $ sed -i '/^#/' grammar.tx
+
+Generate graphical visualization of coupe_ meta-model in `GraphViz`_'s dot format
 
 .. note:: ``dot -> png`` conversion requires `GraphViz`_
 
@@ -46,7 +54,7 @@ Graphical visualization of coupe_ meta-model in `GraphViz`_'s dot format
     :width: 600px
     :alt: Meta-model in GraphViz format
 
-Graphical visualization of coupe_ meta-model in `PlantUML`_'s pu format
+Generate graphical visualization of coupe_ meta-model in `PlantUML`_'s pu format
 
 .. note:: ``pu -> png`` conversion requires `PlantUML`_
 
@@ -59,6 +67,12 @@ Graphical visualization of coupe_ meta-model in `PlantUML`_'s pu format
     :width: 600px
     :alt: Meta-model in PlantUML format
 
+Cleanup
+
+.. code:: bash
+
+    $ rm grammar.*
+
 Model
 -----
 
@@ -66,7 +80,7 @@ Simple example from `Cue sheet page`_ on the `Hydrogenaudio Knowledgebase web si
 
 .. code:: bash
 
-    $ cat test1.cue
+    $ cat examples/test1.cue
 
 .. code::
 
@@ -86,7 +100,13 @@ Simple example from `Cue sheet page`_ on the `Hydrogenaudio Knowledgebase web si
             PERFORMER "My Bloody Valentine"
             INDEX 01 04:17:52
 
-Graphical visualization of test1.cue in `GraphViz`_'s dot format
+Copy example file to current directory
+
+.. code:: bash
+
+    $ cp examples/test1.cue .
+
+Generate graphical visualization of test1.cue in `GraphViz`_'s dot format
 
 .. note:: ``dot -> png`` conversion requires `GraphViz`_
 
@@ -99,14 +119,62 @@ Graphical visualization of test1.cue in `GraphViz`_'s dot format
     :width: 600px
     :alt: Meta-model in GraphViz format
 
+Cleanup
+
+.. code:: bash
+
+    $ rm test1.*
+
 Usage
 =====
 
 Let's re-use our previous example.
 
+First, we use coupe demonstration script
+
 .. code:: bash
 
-    $ prout
+    $ python -m coupe examples/test1.cue
+    GENRE Alternative
+    DISCID 860B640B
+    COMMENT ExactAudioCopy v0.95b4
+    PERFORMER My Bloody Valentine
+    CATALOG 6578765325689
+    TITLE Loveless
+    DATE 1991
+    FILE My Bloody Valentine - Loveless.wav WAVE
+     * TRACK 01 AUDIO
+      - TITLE Only Shallow
+      - PERFORMER My Bloody Valentine
+      - ISRC ABCDE1234567
+      - FLAGS 4CH PRE
+     * TRACK 02 AUDIO
+      - TITLE Loomer
+      - PERFORMER My Bloody Valentine
+      - ISRC FRZ119220350
+      - FLAGS 4CH PRE
+
+
+Then we can use coupe as a library and browse parsed data
+
+.. code:: python
+
+    >>> from coupe import model_from_file
+    >>> model = model_from_file("examples/test1.cue")
+    >>> model.infos
+    {'GENRE': <REMIdOrString:GENRE>, 'DISCID': <REMDiscId:DISCID>, 'COMMENT': <REMIdOrString:COMMENT>, 'PERFORMER': <MetaTag:PERFORMER>, 'CATALOG': <Catalog:CATALOG>, 'TITLE': <MetaTag:TITLE>, 'DATE': <REMDate:DATE>}
+    >>> model.infos['DATE']
+    <REMDate:DATE>
+    >>> model.infos['DATE'].value
+    '1991'
+    >>> model.infos['GENRE'].value
+    'Alternative'
+    >>> model.files
+    {'My Bloody Valentine - Loveless.wav': <File:My Bloody Valentine - Loveless.wav>}
+    >>> model.files['My Bloody Valentine - Loveless.wav'].tracks
+    [<textx:Track instance at 0x6aa0ed115670>, <textx:Track instance at 0x6aa0ed1156a0>]
+    >>> [f"{t.number} {t.datatype}" for t in model.files["My Bloody Valentine - Loveless.wav"].tracks]
+    ['01 AUDIO', '02 AUDIO']
 
 .. _cue-sheet: https://en.wikipedia.org/wiki/Cue_sheet_(computing)
 .. _Appendix A of CDRWIN user manual: https://web.archive.org/web/20070614044112/http://www.goldenhawk.com/download/cdrwin.pdf
