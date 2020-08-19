@@ -6,9 +6,16 @@ from . import model_from_file, Model
 
 if __name__ == '__main__':
     try:
-        model: Model = model_from_file('examples/test1.cue')
+        cuesheet = sys.argv[1]
+    except IndexError:
+        cuesheet = 'examples/test1.cue'
+    try:
+        model: Model = model_from_file(cuesheet)
     except (TextXSemanticError, TextXSyntaxError) as error:
         print(error.message)
+        sys.exit(1)
+    except FileNotFoundError as error:
+        print(error)
         sys.exit(1)
 
     for info in model.infos:
