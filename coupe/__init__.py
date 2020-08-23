@@ -14,7 +14,7 @@ class Model:
         self._split_album_infos_from_files()
 
     def _split_album_infos_from_files(self) -> None:
-        for command in [*self.model.infos, *self.model.commands]:
+        for command in self.model.commands:
             if command.__class__.__name__ == 'File':
                 self.files[command.name] = command
             else:

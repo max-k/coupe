@@ -1,12 +1,11 @@
 # flake8: noqa
 GRAMMAR = """
 CueSheet:
-    infos*=AlbumInfo
     commands+=Command
 ;
 
-AlbumInfo:
-    REM | AlbumTag | MetaTag
+Command:
+    REM | AlbumTag | MetaTag | File
 ;
 
 REM:
@@ -55,10 +54,6 @@ MetaTag:
 
 MetaTagName:
     'PERFORMER' | 'SONGWRITER' | 'TITLE'
-;
-
-Command:
-    REM | AlbumTag | File
 ;
 
 File:
